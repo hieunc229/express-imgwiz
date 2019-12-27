@@ -1,3 +1,5 @@
+<img src="imgwiz.svg" height="140"/>
+
 # express-imgwiz
 
 Format, resize images on-the-fly expressjs. `express-imgwiz` use `sharp` underneat. It comes as both `middleware` and `handler`.
