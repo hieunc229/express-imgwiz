@@ -44,7 +44,7 @@ import { imgWizHandler } from "express-imgwiz";
 
 app.get("/photos", imgWizHandler)
 
-// Uage example: https://yourdomain.com/photo/?url=https://imagehost.com/image-file.png&fm=png&q=80&sharpen=true
+// Uage example: https://yourdomain.com/photos/?url=https://imagehost.com/image-file.png&fm=png&q=80&sharpen=true
 ```
 
 ### Available arguments:
