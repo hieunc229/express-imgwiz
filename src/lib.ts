@@ -18,7 +18,7 @@ type ImageOptions = {
     blur?: string
 }
 
-export function convertImage(source: { url?: string, path?: string }, opts: ImageOptions): Promise<{ buffer: Buffer, type: string }> {
+export function convertImage(source: { url?: string, path?: string, cache?: boolean }, opts: ImageOptions): Promise<{ buffer: Buffer, type: string }> {
 
     return new Promise(async (resolve, reject) => {
 

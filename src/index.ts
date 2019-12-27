@@ -1,5 +1,5 @@
-import imgWizHandler from "./handler";
-import imgWizMiddleWare from "./middleware";
+import imgWizHandler from "./handlers/handler";
+import imgWizMiddleWare from "./handlers/middleware";
 
 export {
     imgWizHandler,
