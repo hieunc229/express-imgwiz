@@ -17,6 +17,7 @@ declare type ImageOptions = {
 export declare function convertImage(source: {
     url?: string;
     path?: string;
+    cache?: boolean;
 }, opts: ImageOptions): Promise<{
     buffer: Buffer;
     type: string;
