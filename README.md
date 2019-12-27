@@ -2,6 +2,8 @@
 
 Format, resize images on-the-fly expressjs. `express-imgwiz` use `sharp` underneat. It comes as both `middleware` and `handler`.
 
+Tips: Use with a CDN service to not re-generate image every time a request comes in. Remember to set cache TTL for a long period. If you are using Cloudflare, set the option to cache everything.
+
 ## Installation
 
 `express-imgwiz` is available as a npm package. You can install via `npm` or `yarn` as normal
