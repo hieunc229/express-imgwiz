@@ -25,16 +25,29 @@ $ yarn add express-imgwiz
 
 ## Use as a middleware (serve as static files)
 
+### Usage
+
+- Function: `imgWizMiddleware`
+- Arguments:
+    - `staticDir` (string, required): your static image directory 
+    - `cacheDir` (string): save generated file on disk into the given directory
+
+### Example
+
 ```js
 import { imgWizMiddleware } from "express-imgwiz";
 import path from "path";
 
-app.use("/static", imgWizHandler({ staticDir: path.join(__dirname, "static") }))
+app.use("/static", imgWizMiddleware({ 
+    staticDir: path.join(__dirname, "static"),
+    // cacheDir: path.join(__dirname, "cached")
+}))
 
 // Uage example: https://yourdomain.com/static/image-file.png&fm=png&q=80&sharpen=true
 ```
 
-### Available arguments:
+### Available transform options:
+
 - `h` (number): resize height (h=460)
 - `w` (number): resize width (w=640)
 - `q` (number): quality (q=80)
@@ -48,15 +61,35 @@ app.use("/static", imgWizHandler({ staticDir: path.join(__dirname, "static") }))
 
 ## Use as a handler (get image from a URL)
 
+### Usage
+
+- Function: `imgWizHandler`
+- Arguments:
+    - `cacheDir` (string): save generated file on disk into the given directory
+
+_Note: imgWizHandler is a initiate function in v0.0.3. So instead of using `imgWizHandler`, use `imgWizHandler()`_
+
+### Example
+
 ```js
 import { imgWizHandler } from "express-imgwiz";
 
-app.get("/photos", imgWizHandler)
+app.get("/photos", imgWizHandler({
+    // cacheDir: path.join(__dirname, "cached")
+}))
 
 // Uage example: https://yourdomain.com/photos/?url=https://imagehost.com/image-file.png&fm=png&q=80&sharpen=true
 ```
 
-### Available arguments:
+### Available transform options:
 
-- *all arguments supported as middleware above
+- *all options supported as middleware above
 - `url` (string, required): target image url
+
+
+# Changelog
+
+- v0.0.3 added local cache
+- v0.0.1-v0.0.2 intiate project
+
+Feel free to ask or give feedback. Thank you!
