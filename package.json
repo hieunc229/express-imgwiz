@@ -19,7 +19,7 @@
     "middleware"
   ],
   "author": "Hieu C. Nguyen",
-  "license": "MIT",
+  "license": "See LICENSE",
   "bugs": {
     "url": "https://github.com/hieunc229/express-imgwiz/issues"
   },
