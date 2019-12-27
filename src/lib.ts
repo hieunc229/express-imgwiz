@@ -22,7 +22,12 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
 
     return new Promise(async (resolve, reject) => {
 
-        const imageType = (((source.url ? source.url : source.path) || "").split(".").pop() as string).toLowerCase();
+        let imageType = (((source.url ? source.url : source.path) || "").split(".").pop() as string).toLowerCase();
+
+        // Remove query incase the given url also contains query
+        if (imageType.indexOf("?")) {
+            imageType = imageType.split("?").shift() as string;
+        }
 
         const img = source.url ? await getImage(source.url) : source.path;
         if (!img) {

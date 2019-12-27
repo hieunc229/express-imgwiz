@@ -86,6 +86,7 @@ app.get("/photos", imgWizHandler({
 - *all options supported as middleware above
 - `url` (string, required): target image url
 
+Note: Use `encodeURIComponent` if `url` has query, otherwise it will fail. For example: `encodeURIComponent("https://host.com/photo.png?quey=value")`
 
 # Changelog
 

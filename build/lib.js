@@ -50,6 +50,10 @@ function convertImage(source, opts) {
             switch (_b.label) {
                 case 0:
                     imageType = ((source.url ? source.url : source.path) || "").split(".").pop().toLowerCase();
+                    // Remove query incase the given url also contains query
+                    if (imageType.indexOf("?")) {
+                        imageType = imageType.split("?").shift();
+                    }
                     if (!source.url) return [3 /*break*/, 2];
                     return [4 /*yield*/, getImage(source.url)];
                 case 1:
