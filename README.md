@@ -23,7 +23,7 @@ $ npm install express-imgwiz
 $ yarn add express-imgwiz
 ```
 
-## Use as a middleware
+## Use as a middleware (serve as static files)
 
 ```js
 import { imgWizMiddleware } from "express-imgwiz";
@@ -46,7 +46,7 @@ app.use("/static", imgWizHandler({ staticDir: path.join(__dirname, "static") }))
 - `enlarge` ("true" | "false"): enlarge image if given size is bigger than actual size
 - `blur` ("true" or number (0.1 - 1000)): blur image
 
-## Use as a handler
+## Use as a handler (get image from a URL)
 
 ```js
 import { imgWizHandler } from "express-imgwiz";
