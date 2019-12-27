@@ -1,0 +1,36 @@
+{
+  "name": "express-imgwiz",
+  "version": "0.0.2",
+  "description": "Convert, format images on-the-fly middleware for expressjs",
+  "main": "build/index.js",
+  "type": "build/*",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hieunc229/express-imgwiz.git"
+  },
+  "keywords": [
+    "image",
+    "resize",
+    "sharp",
+    "express",
+    "middleware"
+  ],
+  "author": "Hieu C. Nguyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hieunc229/express-imgwiz/issues"
+  },
+  "homepage": "https://github.com/hieunc229/express-imgwiz#readme",
+  "devDependencies": {
+    "typescript": "^3.7.4"
+  },
+  "peerDependencies": {
+    "express": "*"
+  },
+  "dependencies": {
+    "sharp": "^0.23.4"
+  }
+}
