@@ -13,21 +13,25 @@ export default function imgWizMiddleWare(opts?: { staticDir?: string, cacheDir?:
 
             let cached = false, data: { buffer: Buffer, type: string } | null = null;
 
-            const localFilePath = formatLocalFilePath(req.path.substr(1), req.query);
-            if (cacheDir) {
-                data = await getLocalFile(cacheDir, localFilePath);
-                cached = data !== null;
-            };
+            try {
+                const localFilePath = formatLocalFilePath(req.path.substr(1), req.query);
+                if (cacheDir) {
+                    data = await getLocalFile(cacheDir, localFilePath);
+                    cached = data !== null;
+                };
 
-            if (data === null) {
-                data = await convertImage({ path: `${staticDir}${req.path}` }, req.query);
+                if (data === null) {
+                    data = await convertImage({ path: `${staticDir}${req.path}` }, req.query);
+                }
+
+                res.set('Cache-Control', 'public, max-age=31557600');
+                res.set('Last-Modified', lastModifiedFormat(new Date()))
+                res.status(200).contentType(data.type).end(data.buffer, 'binary');
+
+                cacheDir && !cached && saveLocalFile(cacheDir, localFilePath, data.buffer);
+            } catch (err) {
+                res.status(500).end(`Unable to fetch file. Error: ${err.toString()}`)
             }
-
-            res.set('Cache-Control', 'public, max-age=31557600');
-            res.set('Last-Modified', lastModifiedFormat(new Date()))
-            res.status(200).contentType(data.type).end(data.buffer, 'binary');
-
-            cacheDir && !cached && saveLocalFile(cacheDir, localFilePath, data.buffer);
         } else {
             next();
         }

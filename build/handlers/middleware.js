@@ -43,36 +43,44 @@ function imgWizMiddleWare(opts) {
     var _a = Object.assign({ route: "/", staticDir: "/" }, opts), staticDir = _a.staticDir, cacheDir = _a.cacheDir;
     return function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var cached, data, localFilePath;
+            var cached, data, localFilePath, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(['png', 'jpg', 'jpeg', 'tiff', 'webp', 'svg'].indexOf(req.path.split('.').pop()) !== -1)) return [3 /*break*/, 5];
+                        if (!(['png', 'jpg', 'jpeg', 'tiff', 'webp', 'svg'].indexOf(req.path.split('.').pop()) !== -1)) return [3 /*break*/, 8];
                         cached = false, data = null;
-                        localFilePath = formatLocalFilePath(req.path.substr(1), req.query);
-                        if (!cacheDir) return [3 /*break*/, 2];
-                        return [4 /*yield*/, cache_1.getLocalFile(cacheDir, localFilePath)];
+                        _a.label = 1;
                     case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        localFilePath = formatLocalFilePath(req.path.substr(1), req.query);
+                        if (!cacheDir) return [3 /*break*/, 3];
+                        return [4 /*yield*/, cache_1.getLocalFile(cacheDir, localFilePath)];
+                    case 2:
                         data = _a.sent();
                         cached = data !== null;
-                        _a.label = 2;
-                    case 2:
-                        ;
-                        if (!(data === null)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, lib_1.convertImage({ path: "" + staticDir + req.path }, req.query)];
+                        _a.label = 3;
                     case 3:
-                        data = _a.sent();
-                        _a.label = 4;
+                        ;
+                        if (!(data === null)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, lib_1.convertImage({ path: "" + staticDir + req.path }, req.query)];
                     case 4:
+                        data = _a.sent();
+                        _a.label = 5;
+                    case 5:
                         res.set('Cache-Control', 'public, max-age=31557600');
                         res.set('Last-Modified', utils_1.lastModifiedFormat(new Date()));
                         res.status(200).contentType(data.type).end(data.buffer, 'binary');
                         cacheDir && !cached && cache_1.saveLocalFile(cacheDir, localFilePath, data.buffer);
-                        return [3 /*break*/, 6];
-                    case 5:
+                        return [3 /*break*/, 7];
+                    case 6:
+                        err_1 = _a.sent();
+                        res.status(500).end("Unable to fetch file. Error: " + err_1.toString());
+                        return [3 /*break*/, 7];
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
                         next();
-                        _a.label = 6;
-                    case 6: return [2 /*return*/];
+                        _a.label = 9;
+                    case 9: return [2 /*return*/];
                 }
             });
         });
