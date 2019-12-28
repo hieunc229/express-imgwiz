@@ -18,7 +18,6 @@ export default function imgWizandler(opts?: { cacheDir?: string }) {
         let { url, ...opts } = req.query;
 
         if (url) {
-
             try {
                 let cached = false, data: { buffer: Buffer, type: string } | null = null;
                 const localFilePath = formatLocalFilePath(url, opts);
@@ -39,7 +38,7 @@ export default function imgWizandler(opts?: { cacheDir?: string }) {
                 cacheDir && !cached && saveLocalFile(cacheDir, localFilePath, data.buffer);
 
             } catch (err) {
-                res.status(400).end(`Error: ${err.toString()}`)
+                res.status(500).end(`Unable to fetch file. Error: ${err.toString()}`)
             }
         } else {
             res.status(400).end(`Error: Missing "url" query`)

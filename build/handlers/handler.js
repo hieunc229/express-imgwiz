@@ -92,7 +92,7 @@ function imgWizandler(opts) {
                         return [3 /*break*/, 7];
                     case 6:
                         err_1 = _b.sent();
-                        res.status(400).end("Error: " + err_1.toString());
+                        res.status(500).end("Unable to fetch file. Error: " + err_1.toString());
                         return [3 /*break*/, 7];
                     case 7: return [3 /*break*/, 9];
                     case 8:
