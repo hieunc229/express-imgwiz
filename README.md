@@ -2,7 +2,7 @@
 
 # express-imgwiz
 
-Format, resize images on-the-fly for `expressjs`. `express-imgwiz` use `sharp` underneat. It comes as both `middleware` and `handler`.
+Format, resize images on-the-fly for `expressjs`. `express-imgwiz` use `sharp` underneat. It comes as both [middleware](#use-as-a-middleware-serve-static-files) and [request handler](#use-as-a-handler-serve-photos-from-urls).
 
 Tips: Use with a CDN service to not re-generate image every time a request comes in. Remember to set cache TTL for a long period. If you are using Cloudflare, set the option to cache everything.
 
@@ -23,7 +23,7 @@ $ npm install express-imgwiz
 $ yarn add express-imgwiz
 ```
 
-## Use as a middleware (serve as static files)
+## Use as a middleware (serve static files)
 
 ### Usage
 
@@ -59,7 +59,7 @@ app.use("/static", imgWizMiddleware({
 - `enlarge` ("true" | "false"): enlarge image if given size is bigger than actual size
 - `blur` ("true" or number (0.1 - 1000)): blur image
 
-## Use as a handler (get image from a URL)
+## Use as a handler (serve photos from URLs)
 
 ### Usage
 
@@ -90,7 +90,9 @@ Note: Use `encodeURIComponent` if `url` has query, otherwise it will fail. For e
 
 # Changelog
 
-- v0.0.3 added local cache
-- v0.0.1-v0.0.2 intiate project
+- v0.0.5: added local cache
+- v0.0.4: update server response status code
+- v0.0.3: added local cache
+- v0.0.1-v0.0.2: intiate project
 
 Feel free to ask or give feedback. Thank you!
