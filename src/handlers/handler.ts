@@ -32,7 +32,7 @@ export default function imgWizandler(opts?: { cacheDir?: string }) {
                 }
 
                 res.set('Cache-Control', 'public, max-age=31557600');
-                res.set('Last-Modified', lastModifiedFormat(new Date()))
+                res.set('Last-Modified', lastModifiedFormat(new Date()))                
                 res.status(200).contentType(data.type).end(data.buffer, 'binary');
 
                 cacheDir && !cached && saveLocalFile(cacheDir, localFilePath, data.buffer);

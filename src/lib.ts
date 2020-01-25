@@ -1,4 +1,4 @@
-import sharp from "sharp";
+import sharp, { Sharp } from "sharp";
 import http from "http";
 import https from "https";
 
@@ -47,11 +47,13 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
             output = output.resize((opts.w && parseInt(opts.w)) || null, (opts.h && parseInt(opts.h)) || null, resizeOpts)
         }
 
-        let type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
+        let type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
         type === 'jpg' && (type = 'jpeg');
 
         // @ts-ignore
-        output = (output[type]({ quality: opts.q ? parseInt(opts.q) : 80 }) as Sharp);
+        output[type] && typeof output[type] === "function" &&
+        // @ts-ignore
+            (output = (output[type]({ quality: opts.q ? parseInt(opts.q) : 80 }) as Sharp));
 
         opts.sharpen && (
             output = output.sharpen.apply(output,
@@ -67,7 +69,7 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
         output.toBuffer().then((buffer) => {
             resolve({ buffer, type: `image/${type}` });
         })
-        .catch(reject)
+            .catch(reject)
     })
 }
 

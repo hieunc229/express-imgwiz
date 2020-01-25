@@ -76,10 +76,12 @@ function convertImage(source, opts) {
                         opts.enlarge && (resizeOpts.withoutEnlargement = opts.enlarge === "true");
                         output = output.resize((opts.w && parseInt(opts.w)) || null, (opts.h && parseInt(opts.h)) || null, resizeOpts);
                     }
-                    type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
+                    type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
                     type === 'jpg' && (type = 'jpeg');
                     // @ts-ignore
-                    output = output[type]({ quality: opts.q ? parseInt(opts.q) : 80 });
+                    output[type] && typeof output[type] === "function" &&
+                        // @ts-ignore
+                        (output = output[type]({ quality: opts.q ? parseInt(opts.q) : 80 }));
                     opts.sharpen && (output = output.sharpen.apply(output, 
                     // @ts-ignore
                     opts.sharpen === "true" ? [undefined, 1, 2] :
