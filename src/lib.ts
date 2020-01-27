@@ -33,6 +33,11 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
         if (!img) {
             return reject(`Source is undefined`);
         }
+        // return svg as it is
+        if (((source.url || source.path) as string).split(".").pop() === "svg") {
+            resolve({ buffer: img as Buffer, type: "image/svg+xml" });
+            return;
+        }
 
         let output = sharp(img);
 
@@ -47,7 +52,7 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
             output = output.resize((opts.w && parseInt(opts.w)) || null, (opts.h && parseInt(opts.h)) || null, resizeOpts)
         }
 
-        let type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
+        let type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
         type === 'jpg' && (type = 'jpeg');
 
         // @ts-ignore
@@ -90,6 +95,8 @@ function getImage(url: string): Promise<Buffer> {
             res.on('end', function () {
                 resolve(Buffer.from(imageData, 'binary'));
             })
+
+            res.on("error", reject);
         })
     })
 }

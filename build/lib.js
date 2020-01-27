@@ -67,6 +67,11 @@ function convertImage(source, opts) {
                     if (!img) {
                         return [2 /*return*/, reject("Source is undefined")];
                     }
+                    // return svg as it is
+                    if ((source.url || source.path).split(".").pop() === "svg") {
+                        resolve({ buffer: img, type: "image/svg+xml" });
+                        return [2 /*return*/];
+                    }
                     output = sharp_1.default(img);
                     if (opts.h || opts.w) {
                         resizeOpts = {};
@@ -76,7 +81,7 @@ function convertImage(source, opts) {
                         opts.enlarge && (resizeOpts.withoutEnlargement = opts.enlarge === "true");
                         output = output.resize((opts.w && parseInt(opts.w)) || null, (opts.h && parseInt(opts.h)) || null, resizeOpts);
                     }
-                    type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
+                    type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
                     type === 'jpg' && (type = 'jpeg');
                     // @ts-ignore
                     output[type] && typeof output[type] === "function" &&
@@ -110,6 +115,7 @@ function getImage(url) {
             res.on('end', function () {
                 resolve(Buffer.from(imageData, 'binary'));
             });
+            res.on("error", reject);
         });
     });
 }
