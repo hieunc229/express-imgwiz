@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var sharp_1 = __importDefault(require("sharp"));
 var http_1 = __importDefault(require("http"));
 var https_1 = __importDefault(require("https"));
+var utils_1 = require("./utils");
 function convertImage(source, opts) {
     var _this = this;
     return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
@@ -79,7 +80,10 @@ function convertImage(source, opts) {
                         opts.position && (resizeOpts.position = opts.position);
                         opts.kernel && (resizeOpts.kernel = opts.kernel);
                         opts.enlarge && (resizeOpts.withoutEnlargement = opts.enlarge === "true");
-                        output = output.resize((opts.w && parseInt(opts.w)) || null, (opts.h && parseInt(opts.h)) || null, resizeOpts);
+                        opts.h && (resizeOpts.height = parseInt(opts.h));
+                        opts.w && (resizeOpts.width = parseInt(opts.w));
+                        opts.background && (resizeOpts.background = utils_1.extractBackground(opts.background));
+                        output = output.resize(resizeOpts);
                     }
                     type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
                     type === 'jpg' && (type = 'jpeg');

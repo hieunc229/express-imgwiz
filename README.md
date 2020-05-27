@@ -40,7 +40,7 @@ import path from "path";
 
 app.use("/static", imgWizMiddleware({ 
     staticDir: path.join(__dirname, "static"),
-    // cacheDir: path.join(__dirname, "cached")
+    // cacheDir: path.join(__dirname, "cached") // add this option to enable local caching
 }))
 
 // Uage example: https://yourdomain.com/static/image-file.png&fm=png&q=80&sharpen=true
@@ -53,6 +53,8 @@ app.use("/static", imgWizMiddleware({
 - `q` (number): quality (q=80)
 - `fit` ("cover" | "contain" | "fill" | "inside" | "outside"): resize fit
 - `position` ("top" | "right top" | "right" | "right bottom" | "bottom" | "bottom left" | "left top"): resize position
+- `background`: (string): background colour when using a `fit=contain` (background=blue, background=#ffffff, background=(139,195,74,0.4))
+
 - `sharpen` ("true" | "sigma ?, flat (1), jagged (2)"): sharpen target image (sharpen=true, [view more about sharpen](https://sharp.pixelplumbing.com/en/stable/api-operation/#sharpen))
 - `fm` ("webp" | "jpg" | "jpeg" | "tiff" | "png"): format target image
 - `kernel` ("nearest" | "cubic" | "mitchell" | "lanczos2" | "lanczos3"): image kernel option
@@ -75,7 +77,7 @@ _Note: imgWizHandler is a initiate function in v0.0.3. So instead of using `imgW
 import { imgWizHandler } from "express-imgwiz";
 
 app.get("/photos", imgWizHandler({
-    // cacheDir: path.join(__dirname, "cached")
+    // cacheDir: path.join(__dirname, "cached") // add this option to enable local caching
 }))
 
 // Uage example: https://yourdomain.com/photos/?url=https://imagehost.com/image-file.png&fm=png&q=80&sharpen=true
@@ -90,6 +92,8 @@ Note: Use `encodeURIComponent` if `url` has query, otherwise it will fail. For e
 
 # Changelog
 
+- v0.0.8: fix `.svg` image error, added `background` option (thanks to @TheAndroidGuy)
+- v0.0.6-0.0.7: code improvement
 - v0.0.5: added local cache
 - v0.0.4: update server response status code
 - v0.0.3: added local cache

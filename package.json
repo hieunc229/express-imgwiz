@@ -1,6 +1,6 @@
 {
   "name": "express-imgwiz",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Convert, format images on-the-fly middleware for expressjs",
   "main": "build/index.js",
   "type": "build/*",
@@ -31,6 +31,6 @@
     "express": "*"
   },
   "dependencies": {
-    "sharp": "^0.23.4"
+    "sharp": "^0.25.3"
   }
 }

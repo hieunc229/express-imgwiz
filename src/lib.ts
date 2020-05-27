@@ -1,6 +1,7 @@
 import sharp, { Sharp } from "sharp";
 import http from "http";
 import https from "https";
+import { extractBackground } from "./utils";
 
 type ImageOptions = {
     h?: string,
@@ -15,7 +16,8 @@ type ImageOptions = {
     enlarge?: string,
     sharpen?: string,
     q?: string,
-    blur?: string
+    blur?: string,
+    background?: string
 }
 
 export function convertImage(source: { url?: string, path?: string, cache?: boolean }, opts: ImageOptions): Promise<{ buffer: Buffer, type: string }> {
@@ -40,16 +42,18 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
         }
 
         let output = sharp(img);
+        let resizeOpts: sharp.ResizeOptions | undefined;
 
         if (opts.h || opts.w) {
-            let resizeOpts: sharp.ResizeOptions = {};
-
+            resizeOpts = {};
             opts.fit && (resizeOpts.fit = opts.fit);
             opts.position && (resizeOpts.position = opts.position);
             opts.kernel && (resizeOpts.kernel = opts.kernel)
             opts.enlarge && (resizeOpts.withoutEnlargement = opts.enlarge === "true");
-
-            output = output.resize((opts.w && parseInt(opts.w)) || null, (opts.h && parseInt(opts.h)) || null, resizeOpts)
+            opts.h && (resizeOpts.height = parseInt(opts.h));
+            opts.w && (resizeOpts.width = parseInt(opts.w));
+            opts.background && (resizeOpts.background = extractBackground(opts.background))
+            output = output.resize(resizeOpts)
         }
 
         let type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;

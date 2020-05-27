@@ -13,6 +13,7 @@ declare type ImageOptions = {
     sharpen?: string;
     q?: string;
     blur?: string;
+    background?: string;
 };
 export declare function convertImage(source: {
     url?: string;
