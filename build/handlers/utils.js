@@ -27,6 +27,6 @@ function formatLocalFilePath(_url, query) {
     // URL will remove protocal part
     var split = _url.replace(/([htfps]+:\/\/)/, '').split(".");
     var ext = split.pop();
-    return "" + split.join("-").replace(/\//g, '-') + Object.keys(_query || {}).map(function (k) { return k + _query[k]; }).join("-") + "." + ext;
+    return ("" + split.join("-").replace(/\//g, '-') + Object.keys(_query || {}).map(function (k) { return k + _query[k]; }).join("-") + "." + ext).toLowerCase();
 }
 exports.formatLocalFilePath = formatLocalFilePath;

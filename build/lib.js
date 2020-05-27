@@ -47,39 +47,38 @@ var utils_1 = require("./utils");
 function convertImage(source, opts) {
     var _this = this;
     return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-        var imageType, img, _a, output, resizeOpts, type;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var imageType, input, imageRequest, output, resizeOpts, type;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
                     imageType = ((source.url ? source.url : source.path) || "").split(".").pop().toLowerCase();
                     // Remove query incase the given url also contains query
                     if (imageType.indexOf("?")) {
                         imageType = imageType.split("?").shift();
                     }
+                    input = source.path;
                     if (!source.url) return [3 /*break*/, 2];
                     return [4 /*yield*/, getImage(source.url)];
                 case 1:
-                    _a = _b.sent();
-                    return [3 /*break*/, 3];
+                    imageRequest = _a.sent();
+                    input = imageRequest.data;
+                    imageRequest.contentType && (imageType = imageRequest.contentType.replace("image/", ""));
+                    _a.label = 2;
                 case 2:
-                    _a = source.path;
-                    _b.label = 3;
-                case 3:
-                    img = _a;
-                    if (!img) {
+                    if (!input) {
                         return [2 /*return*/, reject("Source is undefined")];
                     }
-                    if (!((source.url || source.path).split(".").pop() === "svg")) return [3 /*break*/, 6];
-                    if (!(typeof img === "string")) return [3 /*break*/, 5];
-                    return [4 /*yield*/, fs_1.default.readFileSync(img)];
+                    if (!((source.url || source.path).split(".").pop() === "svg")) return [3 /*break*/, 5];
+                    if (!(typeof input === "string")) return [3 /*break*/, 4];
+                    return [4 /*yield*/, fs_1.default.readFileSync(input)];
+                case 3:
+                    input = _a.sent();
+                    _a.label = 4;
                 case 4:
-                    img = _b.sent();
-                    _b.label = 5;
-                case 5:
-                    resolve({ buffer: img, type: "image/svg+xml" });
+                    resolve({ buffer: input, type: "image/svg+xml" });
                     return [2 /*return*/];
-                case 6:
-                    output = sharp_1.default(img);
+                case 5:
+                    output = sharp_1.default(input);
                     if (opts.h || opts.w) {
                         resizeOpts = {};
                         opts.fit && (resizeOpts.fit = opts.fit);
@@ -123,7 +122,10 @@ function getImage(url) {
                 imageData += chunk;
             });
             res.on('end', function () {
-                resolve(Buffer.from(imageData, 'binary'));
+                resolve({
+                    data: Buffer.from(imageData, 'binary'),
+                    contentType: res.headers["content-type"]
+                });
             });
             res.on("error", reject);
         });

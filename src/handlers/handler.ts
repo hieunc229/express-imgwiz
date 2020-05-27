@@ -21,7 +21,7 @@ export default function imgWizandler(opts?: { cacheDir?: string, staticDir?: str
         if (url) {
             try {
                 let cached = false, data: { buffer: Buffer, type: string } | null = null;
-                const localFilePath = formatLocalFilePath(url, opts);
+                let localFilePath = formatLocalFilePath(url, opts);
 
                 if (cacheDir) {
                     data = await getLocalFile(cacheDir, localFilePath);
@@ -30,6 +30,11 @@ export default function imgWizandler(opts?: { cacheDir?: string, staticDir?: str
 
                 if (data === null) {
                     data = await convertImage({ url }, opts);
+
+                    // Add image extension when the url doesn't include image extension
+                    if (localFilePath.indexOf(data.type) === -1) {
+                        localFilePath += `.${data.type.replace("image/", '')}`
+                    }
                 }
 
                 res.set('Cache-Control', 'public, max-age=31557600');

@@ -17,7 +17,7 @@ export default function imgWizMiddleWare(opts?: { staticDir?: string, cacheDir?:
 
             try {
                 
-                const localFilePath = formatLocalFilePath(req.path.substr(1), req.query);
+                let localFilePath = formatLocalFilePath(req.path.substr(1), req.query);
 
                 if (cacheDir && req.query.url) {
                     data = await getLocalFile(cacheDir, localFilePath);
@@ -30,6 +30,11 @@ export default function imgWizMiddleWare(opts?: { staticDir?: string, cacheDir?:
                     data = await convertImage({ url,
                         path: url ? undefined : `${staticDir}${req.path}`
                     }, req.query);
+                    
+                    // Add image extension when the url doesn't include image extension
+                    if (localFilePath.indexOf(data.type) === -1) {
+                        localFilePath += `.${data.type.replace("image/", '')}`
+                    }
                 }
         
                 res.set('Cache-Control', 'public, max-age=31557600');

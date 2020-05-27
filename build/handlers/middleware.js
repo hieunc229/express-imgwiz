@@ -69,6 +69,10 @@ function imgWizMiddleWare(opts) {
                             }, req.query)];
                     case 4:
                         data = _a.sent();
+                        // Add image extension when the url doesn't include image extension
+                        if (localFilePath.indexOf(data.type) === -1) {
+                            localFilePath += "." + data.type.replace("image/", '');
+                        }
                         _a.label = 5;
                     case 5:
                         res.set('Cache-Control', 'public, max-age=31557600');

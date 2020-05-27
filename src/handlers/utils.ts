@@ -16,5 +16,5 @@ export function formatLocalFilePath(_url: string, query: any) {
     let split = _url.replace(/([htfps]+:\/\/)/, '').split(".");
     let ext = split.pop();
 
-    return `${split.join("-").replace(/\//g, '-')}${Object.keys(_query || {}).map((k: string) => k + _query[k]).join("-")}.${ext}`
+    return `${split.join("-").replace(/\//g, '-')}${Object.keys(_query || {}).map((k: string) => k + _query[k]).join("-")}.${ext}`.toLowerCase();
 }

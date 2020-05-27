@@ -83,6 +83,10 @@ function imgWizandler(opts) {
                         return [4 /*yield*/, lib_1.convertImage({ url: url }, opts)];
                     case 4:
                         data = _b.sent();
+                        // Add image extension when the url doesn't include image extension
+                        if (localFilePath.indexOf(data.type) === -1) {
+                            localFilePath += "." + data.type.replace("image/", '');
+                        }
                         _b.label = 5;
                     case 5:
                         res.set('Cache-Control', 'public, max-age=31557600');
