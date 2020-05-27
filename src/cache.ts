@@ -33,10 +33,17 @@ export function saveLocalFile(dir: string, urlPath: string, data: Buffer): Promi
 }
 
 function getFilePath(dir: string, urlPath: string) {
-    return  dir + '/' + urlPath.replace(/\//g, '-');
+    return dir + '/' + urlPath.replace(/\//g, '-');
 }
 
 function getType(url: string) {
-    let type = url.split(".").pop() as string;
-    return `image/${type.toLowerCase()}`
+    let type = (url.split(".").pop() as string).toLowerCase();
+
+    // @ts-ignore
+    return `image/${type in mimeTypes ? mimeTypes[type] : type}`
+}
+
+const mimeTypes = {
+    svg: 'svg+xml',
+    jpg: 'jpeg'
 }

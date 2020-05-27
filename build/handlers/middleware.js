@@ -39,20 +39,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var lib_1 = require("../lib");
 var utils_1 = require("../utils");
 var cache_1 = require("../cache");
+var utils_2 = require("./utils");
 function imgWizMiddleWare(opts) {
     var _a = Object.assign({ route: "/", staticDir: "/" }, opts), staticDir = _a.staticDir, cacheDir = _a.cacheDir;
     return function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var cached, data, localFilePath, err_1;
+            var cached, data, localFilePath, url, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(['png', 'jpg', 'jpeg', 'tiff', 'webp', 'svg'].indexOf(req.path.split('.').pop()) !== -1)) return [3 /*break*/, 8];
+                        if (!(req.method === 'GET')) return [3 /*break*/, 8];
                         cached = false, data = null;
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
-                        localFilePath = formatLocalFilePath(req.path.substr(1), req.query);
+                        localFilePath = utils_2.formatLocalFilePath(req.path.substr(1), req.query);
                         if (!cacheDir) return [3 /*break*/, 3];
                         return [4 /*yield*/, cache_1.getLocalFile(cacheDir, localFilePath)];
                     case 2:
@@ -62,7 +63,10 @@ function imgWizMiddleWare(opts) {
                     case 3:
                         ;
                         if (!(data === null)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, lib_1.convertImage({ path: "" + staticDir + req.path }, req.query)];
+                        url = req.query.url;
+                        return [4 /*yield*/, lib_1.convertImage({ url: url,
+                                path: url ? undefined : "" + staticDir + req.path
+                            }, req.query)];
                     case 4:
                         data = _a.sent();
                         _a.label = 5;
@@ -87,14 +91,3 @@ function imgWizMiddleWare(opts) {
     };
 }
 exports.default = imgWizMiddleWare;
-/**
- * Format image URL with extension (replace query with dash (-))
- * For example: image-name.jpg?h=190&w=200 => image-name-h=190-w=200.jpg
- * @param url
- * @param query: tranfrom query (h, w, ...)
- */
-function formatLocalFilePath(url, query) {
-    var split = url.split(".");
-    var ext = split.pop();
-    return "" + split.join("-").replace(/\//g, '-') + Object.keys(query).map(function (k) { return k + query[k]; }).join("-") + "." + ext;
-}

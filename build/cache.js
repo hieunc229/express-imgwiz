@@ -40,6 +40,11 @@ function getFilePath(dir, urlPath) {
     return dir + '/' + urlPath.replace(/\//g, '-');
 }
 function getType(url) {
-    var type = url.split(".").pop();
-    return "image/" + type.toLowerCase();
+    var type = url.split(".").pop().toLowerCase();
+    // @ts-ignore
+    return "image/" + (type in mimeTypes ? mimeTypes[type] : type);
 }
+var mimeTypes = {
+    svg: 'svg+xml',
+    jpg: 'jpeg'
+};

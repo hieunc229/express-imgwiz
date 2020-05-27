@@ -50,6 +50,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var lib_1 = require("../lib");
 var utils_1 = require("../utils");
 var cache_1 = require("../cache");
+var utils_2 = require("./utils");
 /**
  * Initiate imgwiz handle. If `cacheDir` is set, it will cache generated image to disk
  * @param opts {
@@ -70,7 +71,7 @@ function imgWizandler(opts) {
                     case 1:
                         _b.trys.push([1, 6, , 7]);
                         cached = false, data = null;
-                        localFilePath = formatLocalFilePath(url, opts);
+                        localFilePath = utils_2.formatLocalFilePath(url, opts);
                         if (!cacheDir) return [3 /*break*/, 3];
                         return [4 /*yield*/, cache_1.getLocalFile(cacheDir, localFilePath)];
                     case 2:
@@ -105,17 +106,3 @@ function imgWizandler(opts) {
     };
 }
 exports.default = imgWizandler;
-/**
- * Format image URL with extension (remove subdomain, replace query with dash (-))
- * For example: https://sub.domain.com/image-name.jpg?h=190&w=200 => domain.com/image-name-h=190-w=200.jpg
- * @param url: target image url
- * @param query: tranfrom query (h, w, ...)
- */
-function formatLocalFilePath(url, query) {
-    var index = (url.match(/[a-z0-9]+\.[a-z]+\//) || { index: 0 }).index || 0;
-    var split = url.substr(index).split("/");
-    var domain = split.shift();
-    split = split.join("-").split(".");
-    var ext = split.pop();
-    return domain + "/" + split.join("-").replace(/\//g, '-') + Object.keys(query).map(function (k) { return k + query[k]; }).join("-") + "." + ext;
-}

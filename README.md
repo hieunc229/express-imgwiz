@@ -92,6 +92,7 @@ Note: Use `encodeURIComponent` if `url` has query, otherwise it will fail. For e
 
 # Changelog
 
+- v0.0.9: fix serving local `svg` file, clean up codes
 - v0.0.8: fix `.svg` image error, added `background` option (thanks to @TheAndroidGuy)
 - v0.0.6-0.0.7: code improvement
 - v0.0.5: added local cache
