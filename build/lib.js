@@ -39,9 +39,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var sharp_1 = __importDefault(require("sharp"));
 var http_1 = __importDefault(require("http"));
 var https_1 = __importDefault(require("https"));
+var fs_1 = __importDefault(require("fs"));
+var sharp_1 = __importDefault(require("sharp"));
 var utils_1 = require("./utils");
 function convertImage(source, opts) {
     var _this = this;
@@ -68,11 +69,16 @@ function convertImage(source, opts) {
                     if (!img) {
                         return [2 /*return*/, reject("Source is undefined")];
                     }
-                    // return svg as it is
-                    if ((source.url || source.path).split(".").pop() === "svg") {
-                        resolve({ buffer: img, type: "image/svg+xml" });
-                        return [2 /*return*/];
-                    }
+                    if (!((source.url || source.path).split(".").pop() === "svg")) return [3 /*break*/, 6];
+                    if (!(typeof img === "string")) return [3 /*break*/, 5];
+                    return [4 /*yield*/, fs_1.default.readFileSync(img)];
+                case 4:
+                    img = _b.sent();
+                    _b.label = 5;
+                case 5:
+                    resolve({ buffer: img, type: "image/svg+xml" });
+                    return [2 /*return*/];
+                case 6:
                     output = sharp_1.default(img);
                     if (opts.h || opts.w) {
                         resizeOpts = {};

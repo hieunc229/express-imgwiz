@@ -7,4 +7,5 @@ import { Request, Response } from "express";
  */
 export default function imgWizandler(opts?: {
     cacheDir?: string;
+    staticDir?: string;
 }): (req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response) => Promise<void>;

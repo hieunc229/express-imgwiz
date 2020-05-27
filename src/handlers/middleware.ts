@@ -10,6 +10,7 @@ export default function imgWizMiddleWare(opts?: { staticDir?: string, cacheDir?:
 
     return async function (req: Request, res: Response, next: Function) {
 
+
         if (req.method === 'GET') {
 
             let cached = false, data: { buffer: Buffer, type: string } | null = null;
@@ -17,13 +18,14 @@ export default function imgWizMiddleWare(opts?: { staticDir?: string, cacheDir?:
             try {
                 
                 const localFilePath = formatLocalFilePath(req.path.substr(1), req.query);
-                
-                if (cacheDir) {
+
+                if (cacheDir && req.query.url) {
                     data = await getLocalFile(cacheDir, localFilePath);
                     cached = data !== null;
                 };
 
                 if (data === null) {
+
                     let { url } = req.query;
                     data = await convertImage({ url,
                         path: url ? undefined : `${staticDir}${req.path}`

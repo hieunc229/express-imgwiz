@@ -10,9 +10,9 @@ import { formatLocalFilePath } from "./utils";
  *    `cacheDir`: Cache directory
  * }
  */
-export default function imgWizandler(opts?: { cacheDir?: string }) {
+export default function imgWizandler(opts?: { cacheDir?: string, staticDir?: string }) {
 
-    let { cacheDir } = Object.assign({}, opts);
+    let { cacheDir,staticDir } = Object.assign({}, opts);
 
     return async function (req: Request, res: Response) {
 
@@ -26,7 +26,7 @@ export default function imgWizandler(opts?: { cacheDir?: string }) {
                 if (cacheDir) {
                     data = await getLocalFile(cacheDir, localFilePath);
                     cached = data !== null;
-                };
+                }
 
                 if (data === null) {
                     data = await convertImage({ url }, opts);

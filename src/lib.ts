@@ -1,6 +1,8 @@
-import sharp, { Sharp } from "sharp";
 import http from "http";
 import https from "https";
+import fs from "fs";
+
+import sharp, { Sharp } from "sharp";
 import { extractBackground } from "./utils";
 
 type ImageOptions = {
@@ -31,12 +33,16 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
             imageType = imageType.split("?").shift() as string;
         }
 
-        const img = source.url ? await getImage(source.url) : source.path;
+        let img = source.url ? await getImage(source.url) : source.path;
         if (!img) {
             return reject(`Source is undefined`);
         }
+        
         // return svg as it is
         if (((source.url || source.path) as string).split(".").pop() === "svg") {
+            if (typeof img === "string") {
+                img = await fs.readFileSync(img);
+            }
             resolve({ buffer: img as Buffer, type: "image/svg+xml" });
             return;
         }
@@ -61,7 +67,7 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
 
         // @ts-ignore
         output[type] && typeof output[type] === "function" &&
-        // @ts-ignore
+            // @ts-ignore
             (output = (output[type]({ quality: opts.q ? parseInt(opts.q) : 80 }) as Sharp));
 
         opts.sharpen && (

@@ -58,7 +58,7 @@ var utils_2 = require("./utils");
  * }
  */
 function imgWizandler(opts) {
-    var cacheDir = Object.assign({}, opts).cacheDir;
+    var _a = Object.assign({}, opts), cacheDir = _a.cacheDir, staticDir = _a.staticDir;
     return function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, url, opts, cached, data, localFilePath, err_1;
@@ -79,7 +79,6 @@ function imgWizandler(opts) {
                         cached = data !== null;
                         _b.label = 3;
                     case 3:
-                        ;
                         if (!(data === null)) return [3 /*break*/, 5];
                         return [4 /*yield*/, lib_1.convertImage({ url: url }, opts)];
                     case 4:

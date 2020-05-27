@@ -54,7 +54,7 @@ function imgWizMiddleWare(opts) {
                     case 1:
                         _a.trys.push([1, 6, , 7]);
                         localFilePath = utils_2.formatLocalFilePath(req.path.substr(1), req.query);
-                        if (!cacheDir) return [3 /*break*/, 3];
+                        if (!(cacheDir && req.query.url)) return [3 /*break*/, 3];
                         return [4 /*yield*/, cache_1.getLocalFile(cacheDir, localFilePath)];
                     case 2:
                         data = _a.sent();
