@@ -69,6 +69,7 @@ app.get("/photos/:path", imgWizHandler({
 
 ### 2.3. Available transform options:
 
+```js
 - `h` (number): resize height (h=460)
 - `w` (number): resize width (w=640)
 - `q` (number): quality (q=80)
@@ -82,6 +83,7 @@ app.get("/photos/:path", imgWizHandler({
 - `enlarge` ("true" | "false"): enlarge image if given size is bigger than actual size
 - `blur` ("true" or number (0.1 - 1000)): blur image
 - `url` (string, optional): the target photo URL. If no `url` is specify, the library will look up on `staticDir` if enabled. Note: Use `encodeURIComponent` if `url` has query, otherwise it will fail. For example: `encodeURIComponent("https://host.com/photo.png?quey=value")`
+```
 
 ```js
 Example URL using transform queries
