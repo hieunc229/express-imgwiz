@@ -75,7 +75,7 @@ function convertImage(source, opts) {
                     input = _a.sent();
                     _a.label = 4;
                 case 4:
-                    resolve({ buffer: input, type: "image/svg+xml" });
+                    resolve({ buffer: input, mime: "image/svg+xml", ext: "svg" });
                     return [2 /*return*/];
                 case 5:
                     output = sharp_1.default(input);
@@ -90,7 +90,7 @@ function convertImage(source, opts) {
                         opts.background && (resizeOpts.background = utils_1.extractBackground(opts.background));
                         output = output.resize(resizeOpts);
                     }
-                    type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
+                    type = opts.fm && utils_1.SupportedTypes.indexOf(opts.fm) !== -1 ? opts.fm : imageType;
                     type === 'jpg' && (type = 'jpeg');
                     // @ts-ignore
                     output[type] && typeof output[type] === "function" &&
@@ -103,7 +103,7 @@ function convertImage(source, opts) {
                         opts.sharpen.split(",").map(function (v) { return isNaN(v) ? undefined : parseInt(v); })));
                     opts.blur && (output = output.blur.apply(output, opts.blur === "true" ? [undefined] : [parseInt(opts.blur)]));
                     output.toBuffer().then(function (buffer) {
-                        resolve({ buffer: buffer, type: "image/" + type });
+                        resolve({ buffer: buffer, mime: "image/" + type, ext: type });
                     })
                         .catch(reject);
                     return [2 /*return*/];

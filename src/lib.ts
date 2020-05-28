@@ -3,7 +3,7 @@ import https from "https";
 import fs from "fs";
 
 import sharp, { Sharp } from "sharp";
-import { extractBackground } from "./utils";
+import { extractBackground, SupportedTypes } from "./utils";
 
 type ImageOptions = {
     h?: string,
@@ -22,7 +22,7 @@ type ImageOptions = {
     background?: string
 }
 
-export function convertImage(source: { url?: string, path?: string, cache?: boolean }, opts: ImageOptions): Promise<{ buffer: Buffer, type: string }> {
+export function convertImage(source: { url?: string, path?: string, cache?: boolean }, opts: ImageOptions): Promise<{ buffer: Buffer, ext: string, mime: string }> {
 
     return new Promise(async (resolve, reject) => {
 
@@ -49,7 +49,7 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
             if (typeof input === "string") {
                 input = await fs.readFileSync(input);
             }
-            resolve({ buffer: input as Buffer, type: "image/svg+xml" });
+            resolve({ buffer: input as Buffer, mime: "image/svg+xml", ext: "svg" });
             return;
         }
 
@@ -69,7 +69,7 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
         }
         
 
-        let type = opts.fm && ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'].indexOf(opts.fm) !== -1 ? opts.fm : imageType;
+        let type = opts.fm && SupportedTypes.indexOf(opts.fm) !== -1 ? opts.fm : imageType;
         type === 'jpg' && (type = 'jpeg');
 
         // @ts-ignore
@@ -89,7 +89,7 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
         opts.blur && (output = output.blur.apply(output, opts.blur === "true" ? [undefined] : [parseInt(opts.blur)]));
 
         output.toBuffer().then((buffer) => {
-            resolve({ buffer, type: `image/${type}` });
+            resolve({ buffer, mime: `image/${type}`, ext: type });
         })
             .catch(reject)
     })

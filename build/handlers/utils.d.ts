@@ -4,4 +4,4 @@
  * @param url
  * @param query: tranfrom query (h, w, ...)
  */
-export declare function formatLocalFilePath(_url: string, query: any): string;
+export declare function formatLocalFilePath(url: string, query: any): string;

@@ -17,3 +17,4 @@ function extractBackground(value) {
     return value;
 }
 exports.extractBackground = extractBackground;
+exports.SupportedTypes = ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'];

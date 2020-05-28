@@ -35,46 +35,45 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var handleRequest_1 = __importDefault(require("./handleRequest"));
-/**
- * Initiate imgwiz handle. If `cacheDir` is set, it will cache generated image to disk
- * @param opts {
- *    `cacheDir`: Enable local caching and set directory
- *    `staticDir`: Enable serving static file and set static directory
- * }
- */
-function imgWizandler(opts) {
-    var _a = Object.assign({}, opts), cacheDir = _a.cacheDir, staticDir = _a.staticDir;
-    return function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, _a, url, query;
-            return __generator(this, function (_b) {
-                try {
-                    path = req.params.path;
-                    _a = req.query, url = _a.url, query = __rest(_a, ["url"]);
-                    handleRequest_1.default({ path: path, staticDir: staticDir, cacheDir: cacheDir, url: url, query: query }, res);
-                }
-                catch (err) {
-                    res.status(500).end("Unable to fetch file. Error: " + err.toString());
-                }
-                return [2 /*return*/];
-            });
+var utils_1 = require("./utils");
+var cache_1 = require("../cache");
+var lib_1 = require("../lib");
+var utils_2 = require("../utils");
+function handleRequest(opts, response) {
+    return __awaiter(this, void 0, void 0, function () {
+        var url, query, path, staticDir, cacheDir, cached, data, localFilePath, localDir;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    url = opts.url, query = opts.query, path = opts.path, staticDir = opts.staticDir, cacheDir = opts.cacheDir;
+                    cached = false, data = null;
+                    localFilePath = utils_1.formatLocalFilePath(url || path, query);
+                    localDir = !url && staticDir ? staticDir : cacheDir;
+                    if (!(localDir && localFilePath)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, cache_1.getLocalFile(localDir, localFilePath)];
+                case 1:
+                    data = _a.sent();
+                    cached = data !== null;
+                    _a.label = 2;
+                case 2:
+                    ;
+                    if (!(data === null)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, lib_1.convertImage({
+                            url: url,
+                            path: url ? undefined : staticDir + "/" + path
+                        }, query)];
+                case 3:
+                    data = _a.sent();
+                    _a.label = 4;
+                case 4:
+                    response.set("Cache-Control', 'public, max-age=" + (process.env.EXPRESS_WIZ_CACHE_AGE || 31557600));
+                    response.set('Last-Modified', utils_2.lastModifiedFormat(new Date()));
+                    response.status(200).contentType(data.mime).end(data.buffer, 'binary');
+                    cacheDir && !cached && cache_1.saveLocalFile(cacheDir, localFilePath, data.buffer);
+                    return [2 /*return*/];
+            }
         });
-    };
+    });
 }
-exports.default = imgWizandler;
+exports.default = handleRequest;

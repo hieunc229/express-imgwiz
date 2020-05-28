@@ -5,7 +5,8 @@
  */
 export declare function getLocalFile(dir: string, urlPath: string): Promise<{
     buffer: Buffer;
-    type: string;
+    ext: string;
+    mime: string;
 } | null>;
 /**
  * Write file to disk

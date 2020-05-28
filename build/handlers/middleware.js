@@ -35,61 +35,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var lib_1 = require("../lib");
-var utils_1 = require("../utils");
-var cache_1 = require("../cache");
-var utils_2 = require("./utils");
+var handleRequest_1 = __importDefault(require("./handleRequest"));
 function imgWizMiddleWare(opts) {
     var _a = Object.assign({ route: "/", staticDir: "/" }, opts), staticDir = _a.staticDir, cacheDir = _a.cacheDir;
-    return function (req, res, next) {
+    return function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var cached, data, localFilePath, url, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!(req.method === 'GET')) return [3 /*break*/, 8];
-                        cached = false, data = null;
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        localFilePath = utils_2.formatLocalFilePath(req.path.substr(1), req.query);
-                        if (!(cacheDir && req.query.url)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, cache_1.getLocalFile(cacheDir, localFilePath)];
-                    case 2:
-                        data = _a.sent();
-                        cached = data !== null;
-                        _a.label = 3;
-                    case 3:
-                        ;
-                        if (!(data === null)) return [3 /*break*/, 5];
-                        url = req.query.url;
-                        return [4 /*yield*/, lib_1.convertImage({ url: url,
-                                path: url ? undefined : "" + staticDir + req.path
-                            }, req.query)];
-                    case 4:
-                        data = _a.sent();
-                        // Add image extension when the url doesn't include image extension
-                        if (localFilePath.indexOf(data.type) === -1) {
-                            localFilePath += "." + data.type.replace("image/", '');
-                        }
-                        _a.label = 5;
-                    case 5:
-                        res.set('Cache-Control', 'public, max-age=31557600');
-                        res.set('Last-Modified', utils_1.lastModifiedFormat(new Date()));
-                        res.status(200).contentType(data.type).end(data.buffer, 'binary');
-                        cacheDir && !cached && cache_1.saveLocalFile(cacheDir, localFilePath, data.buffer);
-                        return [3 /*break*/, 7];
-                    case 6:
-                        err_1 = _a.sent();
-                        res.status(500).end("Unable to fetch file. Error: " + err_1.toString());
-                        return [3 /*break*/, 7];
-                    case 7: return [3 /*break*/, 9];
-                    case 8:
-                        next();
-                        _a.label = 9;
-                    case 9: return [2 /*return*/];
+            var path, _a, url, query;
+            return __generator(this, function (_b) {
+                try {
+                    path = req.path.substr(1);
+                    _a = req.query, url = _a.url, query = __rest(_a, ["url"]);
+                    handleRequest_1.default({ path: path, staticDir: staticDir, cacheDir: cacheDir, url: url, query: query }, res);
                 }
+                catch (err) {
+                    res.status(500).end("Unable to fetch file. Error: " + err.toString());
+                }
+                return [2 /*return*/];
             });
         });
     };

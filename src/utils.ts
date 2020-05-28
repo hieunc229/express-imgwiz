@@ -14,3 +14,5 @@ export function extractBackground(value: string) {
     }
     return value;
 }
+
+export const SupportedTypes = ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'];

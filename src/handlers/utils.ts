@@ -4,17 +4,16 @@
  * @param url 
  * @param query: tranfrom query (h, w, ...)
  */
-export function formatLocalFilePath(_url: string, query: any) {
-    let _query = query;
-    if (!_url && query.url) {
-        let { url, ...rest } = query;
-        _query = rest;
-        _url = url;
-    }
+export function formatLocalFilePath(url: string, query: any) {
+
 
     // URL will remove protocal part
-    let split = _url.replace(/([htfps]+:\/\/)/, '').split(".");
+    let split = url.toLowerCase().replace(/([htfps]+:\/\/)/, '').split(".");
     let ext = split.pop();
 
-    return `${split.join("-").replace(/\//g, '-')}${Object.keys(_query || {}).map((k: string) => k + _query[k]).join("-")}.${ext}`.toLowerCase();
+    if (ext === 'svg') {
+        query = {};
+    }
+
+    return `${split.join("-").replace(/\//g, '-')}${Object.keys(query || {}).map((k: string) => k + query[k]).join("-")}${ext ? '.' + ext : ''}`;
 }

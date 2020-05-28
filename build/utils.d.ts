@@ -5,3 +5,4 @@ export declare function extractBackground(value: string): string | {
     b: number;
     alpha: number;
 };
+export declare const SupportedTypes: string[];

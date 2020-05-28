@@ -6,12 +6,12 @@ Format, resize images on-the-fly for `expressjs`. `express-imgwiz` use `sharp` u
 
 Tips: Use with a CDN service to not re-generate image every time a request comes in. Remember to set cache TTL for a long period. If you are using Cloudflare, set the option to cache everything.
 
-Example: [resized image url](https://wiz.saltar.co/photos/?url=https://i.imgur.com/MBDUWNw.jpg&sharpen=true&fm=webp&h=50)
+Example: [resized image url](https://wiz.saltar.co/photos/?url=https://i.imgur.com/MBDUWNw.jpg&sharpen=true&fm=png&h=100)
 
-![resized image](https://wiz.saltar.co/photos/?url=https://i.imgur.com/MBDUWNw.jpg&sharpen=true&fm=webp&h=50)
+![resized image](https://wiz.saltar.co/photos/?url=https://i.imgur.com/MBDUWNw.jpg&sharpen=true&fm=png&h=100)
 
 
-## Installation
+# 1. Installation
 
 `express-imgwiz` is available as a npm package. You can install via `npm` or `yarn` as normal
 
@@ -23,30 +23,51 @@ $ npm install express-imgwiz
 $ yarn add express-imgwiz
 ```
 
-## Use as a middleware (serve static files)
+# 2. How to use
 
-### Usage
+You can use `express-imgwiz` as either a middleware or a handler. Note that they took the same arguments, but there is a `/:path` param when using as `handler`.
 
-- Function: `imgWizMiddleware`
 - Arguments:
     - `staticDir` (string, required): your static image directory 
     - `cacheDir` (string): save generated file on disk into the given directory
 
-### Example
+### 2.1. Example using as middleware
 
 ```js
+
+// For ES6 syntax
 import { imgWizMiddleware } from "express-imgwiz";
 import path from "path";
 
-app.use("/static", imgWizMiddleware({ 
-    staticDir: path.join(__dirname, "static"),
-    // cacheDir: path.join(__dirname, "cached") // add this option to enable local caching
-}))
+// Or vanila nodejs syntax
+const { imgWizMiddleware } = require("express-imgwiz");
+const path = require("path")
 
-// Uage example: https://yourdomain.com/static/image-file.png&fm=png&q=80&sharpen=true
+app.use("/photos", imgWizMiddleware({ 
+    staticDir: path.join(__dirname, "static"), // comment out to disable serving static files
+    cacheDir: path.join(__dirname, "cached") // comment out to disable local caching
+}))
 ```
 
-### Available transform options:
+### 2.2. Example using as handler
+
+```js
+
+// For ES6 syntax
+import { imgWizHandler } from "express-imgwiz";
+import path from "path";
+
+// Or vanila nodejs syntax
+const { imgWizHandler } = require("express-imgwiz");
+const path = require("path")
+
+app.get("/photos/:path", imgWizHandler({ 
+    staticDir: path.join(__dirname, "static"), // comment out to disable serving static files
+    cacheDir: path.join(__dirname, "cached") // comment out to disable local caching
+}))
+```
+
+### 2.3. Available transform options:
 
 - `h` (number): resize height (h=460)
 - `w` (number): resize width (w=640)
@@ -60,38 +81,25 @@ app.use("/static", imgWizMiddleware({
 - `kernel` ("nearest" | "cubic" | "mitchell" | "lanczos2" | "lanczos3"): image kernel option
 - `enlarge` ("true" | "false"): enlarge image if given size is bigger than actual size
 - `blur` ("true" or number (0.1 - 1000)): blur image
-
-## Use as a handler (serve photos from URLs)
-
-### Usage
-
-- Function: `imgWizHandler`
-- Arguments:
-    - `cacheDir` (string): save generated file on disk into the given directory
-
-_Note: imgWizHandler is a initiate function in v0.0.3. So instead of using `imgWizHandler`, use `imgWizHandler()`_
-
-### Example
+- `url` (string, optional): the target photo URL. If no `url` is specify, the library will look up on `staticDir` if enabled. Note: Use `encodeURIComponent` if `url` has query, otherwise it will fail. For example: `encodeURIComponent("https://host.com/photo.png?quey=value")`
 
 ```js
-import { imgWizHandler } from "express-imgwiz";
+Example URL using transform queries
 
-app.get("/photos", imgWizHandler({
-    // cacheDir: path.join(__dirname, "cached") // add this option to enable local caching
-}))
+// Serving a static file image: 
+// https://yourdomain.com/photos/image-file.png&fm=png&q=80&sharpen=true
 
-// Uage example: https://yourdomain.com/photos/?url=https://imagehost.com/image-file.png&fm=png&q=80&sharpen=true
+// Get image from a URL: 
+// https://yourdomain.com/photos/?url=https://imagehost.com/image-file.png&fm=png&q=80&sharpen=true
 ```
 
-### Available transform options:
+### 2.4. Enviroment Variables
 
-- *all options supported as middleware above
-- `url` (string, required): target image url
+- `process.env.EXPRESS_WIZ_CACHE_AGE`: Set caching age in seconds (default `31557600`)
 
-Note: Use `encodeURIComponent` if `url` has query, otherwise it will fail. For example: `encodeURIComponent("https://host.com/photo.png?quey=value")`
+# 3. Changelog
 
-# Changelog
-
+- v0.1.2: combine codes into a `handleRequest`, update getting `mine` method, clean up code
 - v0.1.1: add file extension when it doesn't included in url
 - v0.1.0: fix serving staticc `svg` file
 - v0.0.9: fix serving local `svg` file, clean up codes

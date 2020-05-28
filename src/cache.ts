@@ -1,16 +1,29 @@
 import fs from "fs";
+import Filetype from "file-type";
+import { SupportedTypes } from "./utils";
 
 /**
  * Check and load cached file if exists
  * @param urlPath file path
  */
-export function getLocalFile(dir: string, urlPath: string): Promise<{ buffer: Buffer, type: string } | null> {
+export function getLocalFile(dir: string, urlPath: string): Promise<{ buffer: Buffer, ext: string, mime: string } | null> {
     return new Promise((resolve, reject) => {
         const filePath = getFilePath(dir, urlPath);
         fs.exists(filePath, exist => {
             if (exist) {
-                fs.readFile(filePath, (err, buffer) => {
-                    err ? reject(err) : resolve({ buffer, type: getType(urlPath) });
+                fs.readFile(filePath, async (err, buffer) => {
+
+                    let mime: string = getMime(urlPath);
+                    let ext = mime.replace("images", "");
+
+                    // console.log(dir, urlPath, exist, buffer && buffer.length);
+
+                    if (SupportedTypes.indexOf(ext) === -1) {
+                        let ft = await Filetype.fromBuffer(buffer);
+                        ft && (ext = ft.ext) && (mime = ft.mime);
+                    }
+
+                    err ? reject(err) : resolve({ buffer, ext, mime });
                 })
             } else {
                 resolve(null);
@@ -36,7 +49,7 @@ function getFilePath(dir: string, urlPath: string) {
     return dir + '/' + urlPath.replace(/\//g, '-');
 }
 
-function getType(url: string) {
+function getMime(url: string) {
     let type = (url.split(".").pop() as string).toLowerCase();
 
     // @ts-ignore

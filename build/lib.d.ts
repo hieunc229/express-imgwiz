@@ -21,6 +21,7 @@ export declare function convertImage(source: {
     cache?: boolean;
 }, opts: ImageOptions): Promise<{
     buffer: Buffer;
-    type: string;
+    ext: string;
+    mime: string;
 }>;
 export {};
