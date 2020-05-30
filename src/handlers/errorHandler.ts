@@ -34,6 +34,6 @@ export async function handleError(response: Response, error: Error) {
         return;
     }
 
-    response.status(500)
+    response.status(400)
         .send(`Unable to fetch file. ${error.toString()}`);
 }
