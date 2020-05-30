@@ -2,4 +2,4 @@ import { Request, Response } from "express";
 export default function imgWizMiddleWare(opts?: {
     staticDir?: string;
     cacheDir?: string;
-}): (req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response) => Promise<void>;
+}): (reqquest: Request<import("express-serve-static-core").ParamsDictionary>, response: Response) => void;

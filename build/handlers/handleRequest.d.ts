@@ -1,8 +1,10 @@
 import { Response } from "express";
-export default function handleRequest(opts: {
+declare type RequestOpts = {
     url?: string;
     query: any;
     path: string;
     staticDir?: string;
     cacheDir?: string;
-}, response: Response): Promise<void>;
+};
+export default function handleRequest(opts: RequestOpts, response: Response): Promise<undefined>;
+export {};

@@ -40,58 +40,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = __importDefault(require("fs"));
-var file_type_1 = __importDefault(require("file-type"));
-var utils_1 = require("./utils");
+var utils_1 = require("../utils");
+var serveImage_1 = require("./serveImage");
+var CACHED_404_IMAGE;
 /**
- * Check and load cached file if exists
- * @param dir: local directory path
- * @param urlPath: file path
+ * Handle error by displaying the error message or showing 404 error if EXPRESS_WIZ_404_IMAGE is set
+ * @param response: Express handler's response object
+ * @param error: Error object
+ * @return void
  */
-function getLocalFile(dir, urlPath) {
-    var _this = this;
-    return new Promise(function (resolve, reject) {
-        var filePath = getFilePath(dir, urlPath);
-        fs_1.default.exists(filePath, function (exist) {
-            if (exist) {
-                fs_1.default.readFile(filePath, function (err, buffer) { return __awaiter(_this, void 0, void 0, function () {
-                    var mime, ext, ft;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                mime = utils_1.getMime(urlPath);
-                                ext = mime.replace("images", "");
-                                if (!(utils_1.SupportedTypes.indexOf(ext) === -1)) return [3 /*break*/, 2];
-                                return [4 /*yield*/, file_type_1.default.fromBuffer(buffer)];
-                            case 1:
-                                ft = _a.sent();
-                                ft && (ext = ft.ext) && (mime = ft.mime);
-                                _a.label = 2;
-                            case 2:
-                                err ? reject(err) : resolve({ buffer: buffer, ext: ext, mime: mime });
-                                return [2 /*return*/];
-                        }
-                    });
-                }); });
+function handleError(response, error) {
+    return __awaiter(this, void 0, void 0, function () {
+        var buffer;
+        return __generator(this, function (_a) {
+            // Send a 404 placeholder image if enabled
+            if (process.env.EXPRESS_WIZ_404_IMAGE) {
+                if (!CACHED_404_IMAGE) {
+                    buffer = fs_1.default.readFileSync(process.env.EXPRESS_WIZ_404_IMAGE);
+                    if (!buffer) {
+                        response.status(500).send("404! Image not found");
+                        return [2 /*return*/];
+                    }
+                    CACHED_404_IMAGE = {
+                        buffer: buffer,
+                        mime: utils_1.getMime(process.env.EXPRESS_WIZ_404_IMAGE)
+                    };
+                }
+                serveImage_1.serveImage(response, CACHED_404_IMAGE);
+                return [2 /*return*/];
             }
-            else {
-                resolve(null);
-            }
+            response.status(500)
+                .send("Unable to fetch file. " + error.toString());
+            return [2 /*return*/];
         });
     });
 }
-exports.getLocalFile = getLocalFile;
-/**
- * Write file to disk
- * @param urlPath file path
- */
-function saveLocalFile(dir, urlPath, data) {
-    return new Promise(function (resolve, reject) {
-        fs_1.default.writeFile(getFilePath(dir, urlPath), data, function (err) {
-            err ? reject(err) : resolve();
-        });
-    });
-}
-exports.saveLocalFile = saveLocalFile;
-function getFilePath(dir, urlPath) {
-    return dir + '/' + urlPath.replace(/\//g, '-');
-}
+exports.handleError = handleError;

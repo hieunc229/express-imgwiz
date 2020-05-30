@@ -17,4 +17,14 @@ function extractBackground(value) {
     return value;
 }
 exports.extractBackground = extractBackground;
+function getMime(url) {
+    var type = url.split(".").pop().toLowerCase();
+    // @ts-ignore
+    return "image/" + (type in mimeTypes ? mimeTypes[type] : type);
+}
+exports.getMime = getMime;
+var mimeTypes = {
+    svg: 'svg+xml',
+    jpg: 'jpeg'
+};
 exports.SupportedTypes = ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'];

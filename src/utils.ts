@@ -15,4 +15,16 @@ export function extractBackground(value: string) {
     return value;
 }
 
+export function getMime(url: string) {
+    let type = (url.split(".").pop() as string).toLowerCase();
+
+    // @ts-ignore
+    return `image/${type in mimeTypes ? mimeTypes[type] : type}`
+}
+
+const mimeTypes = {
+    svg: 'svg+xml',
+    jpg: 'jpeg'
+}
+
 export const SupportedTypes = ['webp', 'jpg', 'jpeg', 'tiff', 'png', 'svg'];

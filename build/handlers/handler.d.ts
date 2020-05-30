@@ -5,8 +5,9 @@ import { Request, Response } from "express";
  *    `cacheDir`: Enable local caching and set directory
  *    `staticDir`: Enable serving static file and set static directory
  * }
+ * @return void
  */
 export default function imgWizandler(opts?: {
     cacheDir?: string;
     staticDir?: string;
-}): (req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response) => Promise<void>;
+}): (request: Request<import("express-serve-static-core").ParamsDictionary>, response: Response) => void;

@@ -1,10 +1,11 @@
 import fs from "fs";
 import Filetype from "file-type";
-import { SupportedTypes } from "./utils";
+import { SupportedTypes, getMime } from "./utils";
 
 /**
  * Check and load cached file if exists
- * @param urlPath file path
+ * @param dir: local directory path
+ * @param urlPath: file path
  */
 export function getLocalFile(dir: string, urlPath: string): Promise<{ buffer: Buffer, ext: string, mime: string } | null> {
     return new Promise((resolve, reject) => {
@@ -49,14 +50,3 @@ function getFilePath(dir: string, urlPath: string) {
     return dir + '/' + urlPath.replace(/\//g, '-');
 }
 
-function getMime(url: string) {
-    let type = (url.split(".").pop() as string).toLowerCase();
-
-    // @ts-ignore
-    return `image/${type in mimeTypes ? mimeTypes[type] : type}`
-}
-
-const mimeTypes = {
-    svg: 'svg+xml',
-    jpg: 'jpeg'
-}

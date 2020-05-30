@@ -58,9 +58,12 @@ function convertImage(source, opts) {
                     }
                     input = source.path;
                     if (!source.url) return [3 /*break*/, 2];
-                    return [4 /*yield*/, getImage(source.url)];
+                    return [4 /*yield*/, getImage(source.url)
+                            .catch(reject)];
                 case 1:
                     imageRequest = _a.sent();
+                    if (!imageRequest)
+                        return [2 /*return*/];
                     input = imageRequest.data;
                     imageRequest.contentType && (imageType = imageRequest.contentType.replace("image/", ""));
                     _a.label = 2;
@@ -68,16 +71,20 @@ function convertImage(source, opts) {
                     if (!input) {
                         return [2 /*return*/, reject("Source is undefined")];
                     }
-                    if (!((source.url || source.path).split(".").pop() === "svg")) return [3 /*break*/, 5];
-                    if (!(typeof input === "string")) return [3 /*break*/, 4];
-                    return [4 /*yield*/, fs_1.default.readFileSync(input)];
-                case 3:
-                    input = _a.sent();
-                    _a.label = 4;
-                case 4:
-                    resolve({ buffer: input, mime: "image/svg+xml", ext: "svg" });
-                    return [2 /*return*/];
-                case 5:
+                    // return svg as it is
+                    if ((source.url || source.path).split(".").pop() === "svg") {
+                        if (typeof input === "string") {
+                            try {
+                                input = fs_1.default.readFileSync(input);
+                            }
+                            catch (err) {
+                                reject("Error: File doesn't exists");
+                                return [2 /*return*/];
+                            }
+                        }
+                        resolve({ buffer: input, mime: "image/svg+xml", ext: "svg" });
+                        return [2 /*return*/];
+                    }
                     output = sharp_1.default(input);
                     if (opts.h || opts.w) {
                         resizeOpts = {};
@@ -102,7 +109,8 @@ function convertImage(source, opts) {
                         // @ts-ignore
                         opts.sharpen.split(",").map(function (v) { return isNaN(v) ? undefined : parseInt(v); })));
                     opts.blur && (output = output.blur.apply(output, opts.blur === "true" ? [undefined] : [parseInt(opts.blur)]));
-                    output.toBuffer().then(function (buffer) {
+                    output.toBuffer()
+                        .then(function (buffer) {
                         resolve({ buffer: buffer, mime: "image/" + type, ext: type });
                     })
                         .catch(reject);

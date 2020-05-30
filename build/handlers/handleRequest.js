@@ -36,22 +36,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var lib_1 = require("../lib");
+var serveImage_1 = require("./serveImage");
 var utils_1 = require("./utils");
 var cache_1 = require("../cache");
-var lib_1 = require("../lib");
-var utils_2 = require("../utils");
 function handleRequest(opts, response) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, query, path, staticDir, cacheDir, cached, data, localFilePath, localDir;
+        var url, query, path, staticDir, cacheDir, cached, data, localDir, localFilePath;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     url = opts.url, query = opts.query, path = opts.path, staticDir = opts.staticDir, cacheDir = opts.cacheDir;
                     cached = false, data = null;
-                    localFilePath = utils_1.formatLocalFilePath(url || path, query);
                     localDir = !url && staticDir ? staticDir : cacheDir;
+                    localFilePath = utils_1.formatLocalFilePath(url || path, query);
                     if (!(localDir && localFilePath)) return [3 /*break*/, 2];
-                    return [4 /*yield*/, cache_1.getLocalFile(localDir, localFilePath)];
+                    return [4 /*yield*/, cache_1.getLocalFile(localDir, localFilePath)
+                            .catch(function (error) {
+                            return Promise.reject(error);
+                        })];
                 case 1:
                     data = _a.sent();
                     cached = data !== null;
@@ -59,17 +62,18 @@ function handleRequest(opts, response) {
                 case 2:
                     ;
                     if (!(data === null)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, lib_1.convertImage({
-                            url: url,
-                            path: url ? undefined : staticDir + "/" + path
-                        }, query)];
+                    return [4 /*yield*/, lib_1.convertImage({ url: url, path: url ? undefined : staticDir + "/" + path }, query)
+                            .catch(function (error) {
+                            return Promise.reject(error);
+                        })];
                 case 3:
                     data = _a.sent();
                     _a.label = 4;
                 case 4:
-                    response.set("Cache-Control', 'public, max-age=" + (process.env.EXPRESS_WIZ_CACHE_AGE || 31557600));
-                    response.set('Last-Modified', utils_2.lastModifiedFormat(new Date()));
-                    response.status(200).contentType(data.mime).end(data.buffer, 'binary');
+                    if (!data) {
+                        return [2 /*return*/, Promise.reject("Error: File doesn't exists")];
+                    }
+                    serveImage_1.serveImage(response, data);
                     cacheDir && !cached && cache_1.saveLocalFile(cacheDir, localFilePath, data.buffer);
                     return [2 /*return*/];
             }

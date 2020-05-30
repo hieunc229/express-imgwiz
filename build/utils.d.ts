@@ -5,4 +5,5 @@ export declare function extractBackground(value: string): string | {
     b: number;
     alpha: number;
 };
+export declare function getMime(url: string): string;
 export declare const SupportedTypes: string[];

@@ -1,7 +1,8 @@
 /// <reference types="node" />
 /**
  * Check and load cached file if exists
- * @param urlPath file path
+ * @param dir: local directory path
+ * @param urlPath: file path
  */
 export declare function getLocalFile(dir: string, urlPath: string): Promise<{
     buffer: Buffer;

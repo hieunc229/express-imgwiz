@@ -35,7 +35,11 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
 
         let input: string | Buffer | undefined = source.path;
         if (source.url) {
-            let imageRequest = await getImage(source.url);
+            let imageRequest = await getImage(source.url)
+                .catch(reject);
+
+            if (!imageRequest) return;
+
             input = imageRequest.data;
             imageRequest.contentType && (imageType = imageRequest.contentType.replace("image/", ""));
         }
@@ -46,8 +50,14 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
 
         // return svg as it is
         if (((source.url || source.path) as string).split(".").pop() === "svg") {
+
             if (typeof input === "string") {
-                input = await fs.readFileSync(input);
+                try {
+                    input = fs.readFileSync(input);
+                } catch (err) {
+                    reject(`Error: File doesn't exists`);
+                    return;
+                }
             }
             resolve({ buffer: input as Buffer, mime: "image/svg+xml", ext: "svg" });
             return;
@@ -67,7 +77,7 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
             opts.background && (resizeOpts.background = extractBackground(opts.background))
             output = output.resize(resizeOpts)
         }
-        
+
 
         let type = opts.fm && SupportedTypes.indexOf(opts.fm) !== -1 ? opts.fm : imageType;
         type === 'jpg' && (type = 'jpeg');
@@ -88,9 +98,10 @@ export function convertImage(source: { url?: string, path?: string, cache?: bool
 
         opts.blur && (output = output.blur.apply(output, opts.blur === "true" ? [undefined] : [parseInt(opts.blur)]));
 
-        output.toBuffer().then((buffer) => {
-            resolve({ buffer, mime: `image/${type}`, ext: type });
-        })
+        output.toBuffer()
+            .then((buffer) => {
+                resolve({ buffer, mime: `image/${type}`, ext: type });
+            })
             .catch(reject)
     })
 }
@@ -112,7 +123,7 @@ function getImage(url: string): Promise<{ data: Buffer, contentType?: string }> 
 
             res.on('end', function () {
                 resolve({
-                    data: Buffer.from(imageData, 'binary'), 
+                    data: Buffer.from(imageData, 'binary'),
                     contentType: res.headers["content-type"]
                 });
             })
