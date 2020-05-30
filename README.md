@@ -98,7 +98,7 @@ Example URL using transform queries
 ### 2.4. Enviroment Variables
 
 - `process.env.EXPRESS_WIZ_CACHE_AGE` (number): Set caching age in seconds (default `31557600`)
-- `process.env.EXPRESS_WIZ_404_IMAGE` (string): Set a path to 404 error image, path is relative to the root directory (default `undefined`) 
+- `process.env.EXPRESS_WIZ_404_IMAGE` (string): Set a path to 404 error image (default `undefined`). _Note: Path is relative to the root directory, and only `png`,`jpeg` or `jpg` image is accepted to avoid unnecessary minetype checking_
 
 # 3. Changelog
 
