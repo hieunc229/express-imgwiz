@@ -58,7 +58,7 @@ function handleError(response, error) {
                 if (!CACHED_404_IMAGE) {
                     buffer = fs_1.default.readFileSync(process.env.EXPRESS_WIZ_404_IMAGE);
                     if (!buffer) {
-                        response.status(400).send("404! Image not found");
+                        response.status(500).send("404! Image not found");
                         return [2 /*return*/];
                     }
                     CACHED_404_IMAGE = {

@@ -18,7 +18,7 @@ export default async function handleRequest(opts: RequestOpts, response: Respons
     let cached = false, data: { buffer: Buffer, ext: string, mime: string } | null = null;
 
     // Use static file when staticDir is specified and no query
-    let localDir = !url && staticDir ? staticDir : cacheDir;
+    let localDir = !url && Object.keys(query).length === 0 && staticDir ? staticDir : cacheDir;
     let localFilePath = formatLocalFilePath(url || path, query);
 
     if (localDir && localFilePath) {

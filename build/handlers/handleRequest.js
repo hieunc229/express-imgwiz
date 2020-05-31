@@ -48,7 +48,7 @@ function handleRequest(opts, response) {
                 case 0:
                     url = opts.url, query = opts.query, path = opts.path, staticDir = opts.staticDir, cacheDir = opts.cacheDir;
                     cached = false, data = null;
-                    localDir = !url && staticDir ? staticDir : cacheDir;
+                    localDir = !url && Object.keys(query).length === 0 && staticDir ? staticDir : cacheDir;
                     localFilePath = utils_1.formatLocalFilePath(url || path, query);
                     if (!(localDir && localFilePath)) return [3 /*break*/, 2];
                     return [4 /*yield*/, cache_1.getLocalFile(localDir, localFilePath)
