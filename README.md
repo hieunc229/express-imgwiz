@@ -102,6 +102,7 @@ Example URL using transform queries
 
 # 3. Changelog
 
+- v0.1.4: handle static images in sub-directory, add error when request a non-existing image using url
 - v0.1.3: added error handlers and `EXPRESS_WIZ_404_IMAGE` to display a default image 
 - v0.1.2: combine codes into a `handleRequest`, update getting `mine` method, clean up code
 - v0.1.1: add file extension when it doesn't included in url
@@ -115,3 +116,28 @@ Example URL using transform queries
 - v0.0.1-v0.0.2: intiate project
 
 Feel free to ask or give feedback. Thank you!
+
+# 4. TODO
+
+Write tests. Cases should be tested:
+
+- Transform format querires
+
+- Serve local images
+    - Serve svg
+    - Serve other images
+
+- Serve static file for sub directory
+    - static file without query
+    - static file with query
+
+- Serve image using URL
+    - Serve svg
+    - Serve svg with queries (should exclude query)
+    - Serve image
+    - Serve image with queries
+
+- Serving non-existing image (404)
+    - Non-existing image using URL
+    - Non-existing svg
+    - Non-existing image

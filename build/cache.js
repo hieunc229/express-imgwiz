@@ -40,8 +40,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = __importDefault(require("fs"));
+// import mkdirp from "mkdirp";
 var file_type_1 = __importDefault(require("file-type"));
+// import path from "path";
 var utils_1 = require("./utils");
+// NOTE: the comment outed code blocks attemp to use `mkdirp` to create sub-directory.
+// But to avoid unnecessary steps and extra 3rd-party library, the cache file format will flatout
+// For example: static/sub-dir/file.png -> static/sub-dir-file.png
 /**
  * Check and load cached file if exists
  * @param dir: local directory path
@@ -85,13 +90,28 @@ exports.getLocalFile = getLocalFile;
  * @param urlPath file path
  */
 function saveLocalFile(dir, urlPath, data) {
-    return new Promise(function (resolve, reject) {
-        fs_1.default.writeFile(getFilePath(dir, urlPath), data, function (err) {
-            err ? reject(err) : resolve();
+    var _this = this;
+    return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            // Check if the location is a sub directory
+            // if (urlPath.split("/").length > 1) {
+            //     // Create sub directory if not eixts
+            //     await checkDirExist(getFilePath(dir, urlPath)).catch(err => {
+            //         reject(err);
+            //         return;
+            //     })
+            // }
+            fs_1.default.writeFile(getFilePath(dir, urlPath), data, function (err) {
+                err ? reject(err) : resolve();
+            });
+            return [2 /*return*/];
         });
-    });
+    }); });
 }
 exports.saveLocalFile = saveLocalFile;
+// function checkDirExist(dir: string) {
+//     return mkdirp(path.dirname(dir));
+// }
 function getFilePath(dir, urlPath) {
-    return dir + '/' + urlPath.replace(/\//g, '-');
+    return dir + '/' + urlPath;
 }

@@ -42,14 +42,15 @@ var utils_1 = require("./utils");
 var cache_1 = require("../cache");
 function handleRequest(opts, response) {
     return __awaiter(this, void 0, void 0, function () {
-        var url, query, path, staticDir, cacheDir, cached, data, localDir, localFilePath;
+        var url, query, path, staticDir, cacheDir, cached, data, isAccessStaticFileWithoutQuery, localDir, localFilePath;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     url = opts.url, query = opts.query, path = opts.path, staticDir = opts.staticDir, cacheDir = opts.cacheDir;
                     cached = false, data = null;
-                    localDir = !url && Object.keys(query).length === 0 && staticDir ? staticDir : cacheDir;
-                    localFilePath = utils_1.formatLocalFilePath(url || path, query);
+                    isAccessStaticFileWithoutQuery = (!url && Object.keys(query).length === 0 && staticDir);
+                    localDir = isAccessStaticFileWithoutQuery ? staticDir : cacheDir;
+                    localFilePath = utils_1.formatLocalFilePath(url || path, query, !isAccessStaticFileWithoutQuery);
                     if (!(localDir && localFilePath)) return [3 /*break*/, 2];
                     return [4 /*yield*/, cache_1.getLocalFile(localDir, localFilePath)
                             .catch(function (error) {
@@ -61,7 +62,7 @@ function handleRequest(opts, response) {
                     _a.label = 2;
                 case 2:
                     ;
-                    if (!(data === null)) return [3 /*break*/, 4];
+                    if (!(data === null && !isAccessStaticFileWithoutQuery)) return [3 /*break*/, 4];
                     return [4 /*yield*/, lib_1.convertImage({ url: url, path: url ? undefined : staticDir + "/" + path }, query)
                             .catch(function (error) {
                             return Promise.reject(error);

@@ -124,18 +124,24 @@ function getImage(url) {
     url = decodeURIComponent(url);
     return new Promise(function (resolve, reject) {
         (url.indexOf('https') === 0 ? https_1.default : http_1.default).get(url, function (res) {
-            var imageData = '';
-            res.setEncoding('binary');
-            res.on('data', function (chunk) {
-                imageData += chunk;
-            });
-            res.on('end', function () {
-                resolve({
-                    data: Buffer.from(imageData, 'binary'),
-                    contentType: res.headers["content-type"]
+            if (res.statusCode && acceptedCodes.indexOf(res.statusCode) !== -1) {
+                var imageData = '';
+                res.setEncoding('binary');
+                res.on('data', function (chunk) {
+                    imageData += chunk;
                 });
-            });
-            res.on("error", reject);
+                res.on('end', function () {
+                    resolve({
+                        data: Buffer.from(imageData, 'binary'),
+                        contentType: res.headers["content-type"]
+                    });
+                });
+                res.on("error", reject);
+            }
+            else {
+                reject("Image not found");
+            }
         });
     });
 }
+var acceptedCodes = [200];

@@ -6,13 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @param url
  * @param query: tranfrom query (h, w, ...)
  */
-function formatLocalFilePath(url, query) {
+function formatLocalFilePath(url, query, flattenDirectory) {
     // URL will remove protocal part
     var split = url.toLowerCase().replace(/([htfps]+:\/\/)/, '').split(".");
     var ext = split.pop();
     if (ext === 'svg') {
         query = {};
     }
-    return "" + split.join("-").replace(/\//g, '-') + Object.keys(query || {}).map(function (k) { return k + query[k]; }).join("-") + (ext ? '.' + ext : '');
+    var output = "" + split.join("-") + Object.keys(query || {}).map(function (k) { return k + query[k]; }).join("-") + (ext ? '.' + ext : '');
+    return flattenDirectory ? output.replace(/\//g, '-') : output;
 }
 exports.formatLocalFilePath = formatLocalFilePath;

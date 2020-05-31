@@ -17,19 +17,21 @@ export default async function handleRequest(opts: RequestOpts, response: Respons
     const { url, query, path, staticDir, cacheDir } = opts;
     let cached = false, data: { buffer: Buffer, ext: string, mime: string } | null = null;
 
-    // Use static file when staticDir is specified and no query
-    let localDir = !url && Object.keys(query).length === 0 && staticDir ? staticDir : cacheDir;
-    let localFilePath = formatLocalFilePath(url || path, query);
+    // When accessing static file without any transform query,
+    // it will look directly to the static directory
+    const isAccessStaticFileWithoutQuery = (!url && Object.keys(query).length === 0 && staticDir) as boolean;
+    const localDir = isAccessStaticFileWithoutQuery ? staticDir : cacheDir;
+    const localFilePath = formatLocalFilePath(url || path, query, !isAccessStaticFileWithoutQuery);
 
     if (localDir && localFilePath) {
         data = await getLocalFile(localDir, localFilePath)
-        .catch(error => {
-            return Promise.reject(error);
-        });
+            .catch(error => {
+                return Promise.reject(error);
+            });
         cached = data !== null;
     };
 
-    if (data === null) {
+    if (data === null && !isAccessStaticFileWithoutQuery) {
         data = await convertImage({ url, path: url ? undefined : `${staticDir}/${path}` }, query)
             .catch(error => {
                 return Promise.reject(error);

@@ -4,7 +4,7 @@
  * @param url 
  * @param query: tranfrom query (h, w, ...)
  */
-export function formatLocalFilePath(url: string, query: any) {
+export function formatLocalFilePath(url: string, query: any, flattenDirectory?: boolean) {
 
 
     // URL will remove protocal part
@@ -15,5 +15,6 @@ export function formatLocalFilePath(url: string, query: any) {
         query = {};
     }
 
-    return `${split.join("-").replace(/\//g, '-')}${Object.keys(query || {}).map((k: string) => k + query[k]).join("-")}${ext ? '.' + ext : ''}`;
+    let output = `${split.join("-")}${Object.keys(query || {}).map((k: string) => k + query[k]).join("-")}${ext ? '.' + ext : ''}`;
+    return flattenDirectory ? output.replace(/\//g, '-') : output;
 }

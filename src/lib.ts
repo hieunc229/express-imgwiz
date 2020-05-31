@@ -114,21 +114,28 @@ function getImage(url: string): Promise<{ data: Buffer, contentType?: string }> 
 
         (url.indexOf('https') === 0 ? https : http).get(url, (res) => {
 
-            var imageData = '';
-            res.setEncoding('binary');
+            if (res.statusCode && acceptedCodes.indexOf(res.statusCode) !== -1) {
+                var imageData = '';
+                res.setEncoding('binary');
 
-            res.on('data', function (chunk) {
-                imageData += chunk;
-            });
-
-            res.on('end', function () {
-                resolve({
-                    data: Buffer.from(imageData, 'binary'),
-                    contentType: res.headers["content-type"]
+                res.on('data', function (chunk) {
+                    imageData += chunk;
                 });
-            })
 
-            res.on("error", reject);
+                res.on('end', function () {
+                    resolve({
+                        data: Buffer.from(imageData, 'binary'),
+                        contentType: res.headers["content-type"]
+                    });
+                })
+
+                res.on("error", reject);
+
+            } else {
+                reject("Image not found");
+            }
         })
     })
 }
+
+const acceptedCodes = [200]
