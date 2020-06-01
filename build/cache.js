@@ -64,7 +64,7 @@ function getLocalFile(dir, urlPath) {
                         switch (_a.label) {
                             case 0:
                                 mime = utils_1.getMime(urlPath);
-                                ext = mime.replace("images", "");
+                                ext = utils_1.getExt(urlPath);
                                 if (!(utils_1.SupportedTypes.indexOf(ext) === -1)) return [3 /*break*/, 2];
                                 return [4 /*yield*/, file_type_1.default.fromBuffer(buffer)];
                             case 1:

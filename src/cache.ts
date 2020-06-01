@@ -2,7 +2,7 @@ import fs from "fs";
 // import mkdirp from "mkdirp";
 import Filetype from "file-type";
 // import path from "path";
-import { SupportedTypes, getMime } from "./utils";
+import { SupportedTypes, getMime, getExt } from "./utils";
 
 // NOTE: the comment outed code blocks attemp to use `mkdirp` to create sub-directory.
 // But to avoid unnecessary steps and extra 3rd-party library, the cache file format will flatout
@@ -20,16 +20,14 @@ export function getLocalFile(dir: string, urlPath: string): Promise<{ buffer: Bu
             if (exist) {
                 fs.readFile(filePath, async (err, buffer) => {
 
-                    let mime: string = getMime(urlPath);
-                    let ext = mime.replace("images", "");
-
-                    // console.log(dir, urlPath, exist, buffer && buffer.length);
+                    let mime = getMime(urlPath);
+                    let ext = getExt(urlPath) ;
 
                     if (SupportedTypes.indexOf(ext) === -1) {
                         let ft = await Filetype.fromBuffer(buffer);
                         ft && (ext = ft.ext) && (mime = ft.mime);
                     }
-
+                    
                     err ? reject(err) : resolve({ buffer, ext, mime });
                 })
             } else {

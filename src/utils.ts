@@ -15,11 +15,14 @@ export function extractBackground(value: string) {
     return value;
 }
 
-export function getMime(url: string) {
-    let type = (url.split(".").pop() as string).toLowerCase();
+export function getExt(url: string) {
+    return (url.split(".").pop() as string).toLowerCase();
+}
 
+export function getMime(url: string) {
+    let ext = getExt(url);
     // @ts-ignore
-    return `image/${type in mimeTypes ? mimeTypes[type] : type}`
+    return `image/${ext in mimeTypes ? mimeTypes[ext] : ext}`
 }
 
 const mimeTypes = {

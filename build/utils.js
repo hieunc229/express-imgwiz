@@ -17,10 +17,14 @@ function extractBackground(value) {
     return value;
 }
 exports.extractBackground = extractBackground;
+function getExt(url) {
+    return url.split(".").pop().toLowerCase();
+}
+exports.getExt = getExt;
 function getMime(url) {
-    var type = url.split(".").pop().toLowerCase();
+    var ext = getExt(url);
     // @ts-ignore
-    return "image/" + (type in mimeTypes ? mimeTypes[type] : type);
+    return "image/" + (ext in mimeTypes ? mimeTypes[ext] : ext);
 }
 exports.getMime = getMime;
 var mimeTypes = {
