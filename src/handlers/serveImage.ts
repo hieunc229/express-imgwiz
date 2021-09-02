@@ -1,5 +1,8 @@
 import { Response } from "express";
 import { lastModifiedFormat } from "../utils";
+import fs from "fs";
+
+import { Readable } from "stream";
 
 /**
  * Serve (return) image to the browser
@@ -10,5 +13,26 @@ import { lastModifiedFormat } from "../utils";
 export function serveImage(response: Response, data: { buffer: Buffer, mime: string }) {
     response.set(`Cache-Control', 'public, max-age=${process.env.EXPRESS_WIZ_CACHE_AGE || 31557600}`);
     response.set('Last-Modified', lastModifiedFormat(new Date()))
-    response.status(200).contentType(data.mime).end(data.buffer, 'binary');
+
+  response.contentType(data.mime);
+    
+    let stream = bufferToStream(data.buffer);
+    stream.pipe(response);
+}
+
+
+/**
+ * @param binary Buffer
+ * returns readableInstanceStream Readable
+ */
+function bufferToStream(binary: Buffer) {
+
+    const readableInstanceStream = new Readable({
+      read() {
+        this.push(binary);
+        this.push(null);
+      }
+    });
+
+    return readableInstanceStream;
 }

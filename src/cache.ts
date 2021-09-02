@@ -42,7 +42,7 @@ export function getLocalFile(dir: string, urlPath: string): Promise<{ buffer: Bu
  * Write file to disk
  * @param urlPath file path
  */
-export function saveLocalFile(dir: string, urlPath: string, data: Buffer): Promise<any> {
+export function saveLocalFile(dir: string, urlPath: string, data: Buffer): Promise<void> {
     return new Promise(async (resolve, reject) => {
 
         // Check if the location is a sub directory

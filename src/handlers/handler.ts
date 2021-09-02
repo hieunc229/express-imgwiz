@@ -18,6 +18,7 @@ export default function imgWizandler(opts?: { cacheDir?: string, staticDir?: str
 
         const path = request.params.path;
         const { url, ...query } = request.query;
+        // @ts-ignore
         handleRequest({ path, staticDir, cacheDir, url, query }, response)
             .catch(error => {
                 handleError(response, error);

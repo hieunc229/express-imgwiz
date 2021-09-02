@@ -19,7 +19,7 @@ export default async function handleRequest(opts: RequestOpts, response: Respons
 
     // When accessing static file without any transform query,
     // it will look directly to the static directory
-    const isAccessStaticFileWithoutQuery = (!url && Object.keys(query).length === 0 && staticDir) as boolean;
+    const isAccessStaticFileWithoutQuery = (!url && Object.keys(query).length === 0 && staticDir) as any as boolean;
     const localDir = isAccessStaticFileWithoutQuery ? staticDir : cacheDir;
     const localFilePath = formatLocalFilePath(url || path, query, !isAccessStaticFileWithoutQuery);
 

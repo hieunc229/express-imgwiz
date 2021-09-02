@@ -10,6 +10,7 @@ export default function imgWizMiddleWare(opts?: { staticDir?: string, cacheDir?:
         const path = reqquest.path.substr(1);
         const { url, ...query } = reqquest.query;
 
+        // @ts-ignore
         handleRequest({ path, staticDir, cacheDir, url, query }, response)
             .catch(error => {
                 handleError(response, error);
