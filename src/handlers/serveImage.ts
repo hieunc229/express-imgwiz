@@ -11,8 +11,8 @@ import { Readable } from "stream";
  * @return void
  */
 export function serveImage(response: Response, data: { buffer: Buffer, mime: string }) {
-    response.set(`Cache-Control', 'public, max-age=${process.env.EXPRESS_WIZ_CACHE_AGE || 31557600}`);
-    response.set('Last-Modified', lastModifiedFormat(new Date()))
+    response.setHeader('Cache-Control', `public, max-age=${process.env.EXPRESS_WIZ_CACHE_AGE || 31557600}`);
+    response.setHeader('Last-Modified', lastModifiedFormat(new Date()));
 
   response.contentType(data.mime);
     
